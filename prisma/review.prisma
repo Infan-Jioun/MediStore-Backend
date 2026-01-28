@@ -1,0 +1,13 @@
+model Review {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  medicineId Int
+  rating     Int
+  comment    String?
+  createdAt  DateTime  @default(now())
+
+  user       User     @relation("UserToReviews", fields: [userId], references: [id], onDelete: Cascade)
+  medicine   Medicine @relation("MedicineToReviews", fields: [medicineId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, medicineId])
+}

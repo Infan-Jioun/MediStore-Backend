@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -13,3 +7,107 @@ datasource db {
   provider = "postgresql"
 }
 
+// Enums
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+
+
+model User {
+  id        Int         @id @default(autoincrement())
+  name      String
+  email     String      @unique
+  password  String
+  role      Role
+  address   String?
+  phone     String?
+  isBanned  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  medicines Medicine[] @relation("SellerToMedicines")
+  orders    Order[]    @relation("CustomerToOrders")
+  reviews   Review[]   @relation("UserToReviews")
+}
+
+model Category {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  slug      String?     @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  medicines Medicine[] @relation("CategoryToMedicines")
+}
+
+model Medicine {
+  id           Int          @id @default(autoincrement())
+  name         String
+  slug         String?      @unique
+  description  String?
+  price        Float
+  stock        Int          @default(0)
+  manufacturer String?
+  dosage       String?
+  imageUrl     String?
+  sellerId     Int
+  categoryId   Int
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  seller       User        @relation("SellerToMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
+  category     Category    @relation("CategoryToMedicines", fields: [categoryId], references: [id], onDelete: Restrict)
+  orderItems   OrderItem[]
+  reviews      Review[]    @relation("MedicineToReviews")
+}
+
+model Order {
+  id              Int          @id @default(autoincrement())
+  customerId      Int
+  shippingAddress String
+  totalAmount     Float
+  status          OrderStatus  @default(PLACED)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  customer        User        @relation("CustomerToOrders", fields: [customerId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id         Int       @id @default(autoincrement())
+  orderId    Int
+  medicineId Int
+  quantity   Int
+  price      Float
+
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Restrict)
+
+  @@unique([orderId, medicineId])
+}
+
+model Review {
+  id         Int       @id @default(autoincrement())
+  userId     Int
+  medicineId Int
+  rating     Int
+  comment    String?
+  createdAt  DateTime  @default(now())
+
+  user       User     @relation("UserToReviews", fields: [userId], references: [id], onDelete: Cascade)
+  medicine   Medicine @relation("MedicineToReviews", fields: [medicineId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, medicineId])
+}
