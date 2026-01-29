@@ -27,8 +27,6 @@ model User {
   name          String?
   email         String  @unique
   role          Role    @default(CUSTOMER)
-  address       String?
-  phone         String?
   isBanned      Boolean @default(false)
   emailVerified Boolean @default(false)
   image         String?
