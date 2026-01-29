@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -23,22 +22,24 @@ enum OrderStatus {
 }
 
 model User {
-  id            Int         @id @default(autoincrement())
-  name          String
+  id            String      @id
+  name          String?
   email         String      @unique
-  password      String
-  role          Role
+  password      String?
+  role          Role        @default(CUSTOMER)
   address       String?
   phone         String?
   isBanned      Boolean     @default(false)
+  emailVerified Boolean     @default(false)
+  image         String?
+
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   medicines     Medicine[] @relation("SellerToMedicines")
   orders        Order[]    @relation("CustomerToOrders")
   reviews       Review[]   @relation("UserToReviews")
-  emailVerified Boolean     @default(false)
-  image         String?
+
   sessions      Session[]
   accounts      Account[]
 
@@ -53,6 +54,8 @@ model Category {
   updatedAt DateTime    @updatedAt
 
   medicines Medicine[] @relation("CategoryToMedicines")
+
+  @@map("category")
 }
 
 model Medicine {
@@ -65,8 +68,9 @@ model Medicine {
   manufacturer String?
   dosage       String?
   imageUrl     String?
-  sellerId     Int
+  sellerId     String
   categoryId   Int
+
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -74,19 +78,24 @@ model Medicine {
   category     Category    @relation("CategoryToMedicines", fields: [categoryId], references: [id], onDelete: Restrict)
   orderItems   OrderItem[]
   reviews      Review[]    @relation("MedicineToReviews")
+
+  @@map("medicine")
 }
 
 model Order {
   id              Int          @id @default(autoincrement())
-  customerId      Int
+  customerId      String
   shippingAddress String
   totalAmount     Float
   status          OrderStatus  @default(PLACED)
+
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
   customer        User        @relation("CustomerToOrders", fields: [customerId], references: [id], onDelete: Cascade)
   items           OrderItem[]
+
+  @@map("order")
 }
 
 model OrderItem {
@@ -100,11 +109,12 @@ model OrderItem {
   medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Restrict)
 
   @@unique([orderId, medicineId])
+  @@map("orderItem")
 }
 
 model Review {
   id         Int       @id @default(autoincrement())
-  userId     Int
+  userId     String
   medicineId Int
   rating     Int
   comment    String?
@@ -114,20 +124,21 @@ model Review {
   medicine   Medicine @relation("MedicineToReviews", fields: [medicineId], references: [id], onDelete: Cascade)
 
   @@unique([userId, medicineId])
+  @@map("review")
 }
 
 model Session {
   id        String    @id
   expiresAt DateTime
-  token     String
+  token     String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   ipAddress String?
   userAgent String?
-  userId    Int
+  userId    String
+
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -136,8 +147,7 @@ model Account {
   id                    String     @id
   accountId             String
   providerId            String
-  userId                Int
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -145,8 +155,11 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
+
   createdAt             DateTime   @default(now())
   updatedAt             DateTime   @updatedAt
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
