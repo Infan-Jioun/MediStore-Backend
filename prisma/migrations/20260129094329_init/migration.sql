@@ -6,25 +6,25 @@ CREATE TYPE "OrderStatus" AS ENUM ('PLACED', 'PROCESSING', 'SHIPPED', 'DELIVERED
 
 -- CreateTable
 CREATE TABLE "user" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
+    "name" TEXT,
     "email" TEXT NOT NULL,
-    "password" TEXT,
-    "role" "Role" NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'CUSTOMER',
     "address" TEXT,
     "phone" TEXT,
     "isBanned" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "image" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "category" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -35,7 +35,7 @@ CREATE TABLE "category" (
 
 -- CreateTable
 CREATE TABLE "medicine" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT,
     "description" TEXT,
@@ -44,8 +44,8 @@ CREATE TABLE "medicine" (
     "manufacturer" TEXT,
     "dosage" TEXT,
     "imageUrl" TEXT,
-    "sellerId" INTEGER NOT NULL,
-    "categoryId" INTEGER NOT NULL,
+    "sellerId" TEXT NOT NULL,
+    "categoryId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -54,8 +54,8 @@ CREATE TABLE "medicine" (
 
 -- CreateTable
 CREATE TABLE "order" (
-    "id" SERIAL NOT NULL,
-    "customerId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "customerId" TEXT NOT NULL,
     "shippingAddress" TEXT NOT NULL,
     "totalAmount" DOUBLE PRECISION NOT NULL,
     "status" "OrderStatus" NOT NULL DEFAULT 'PLACED',
@@ -67,9 +67,9 @@ CREATE TABLE "order" (
 
 -- CreateTable
 CREATE TABLE "orderItem" (
-    "id" SERIAL NOT NULL,
-    "orderId" INTEGER NOT NULL,
-    "medicineId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "orderId" TEXT NOT NULL,
+    "medicineId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
 
@@ -78,9 +78,9 @@ CREATE TABLE "orderItem" (
 
 -- CreateTable
 CREATE TABLE "review" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "medicineId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "medicineId" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "comment" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
