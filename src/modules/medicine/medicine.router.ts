@@ -4,6 +4,6 @@ import { medicineController } from "./medicine.controller";
 
 export const router = express.Router()
 
-router.post("/", auth(UserRole.SELLER), medicineController.createMedicine)
+router.post("/", medicineController.createMedicine)
 
 export const medicineRouter: Router = router; 

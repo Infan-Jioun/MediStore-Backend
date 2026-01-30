@@ -1,64 +1,87 @@
 import type { NextFunction, Request, Response } from "express";
-import { auth as betterAuth } from "../lib/auth"
-
+import { auth as betterAuth } from "../lib/auth";
 
 export enum UserRole {
-    ADMIN = "ADMIN", SELLER = "SELLER" , CUSTOMER = "CUSTOMER" , 
+    ADMIN = "ADMIN",
+    SELLER = "SELLER",
+    CUSTOMER = "CUSTOMER",
 }
+
+// Extend Express Request type
 declare global {
     namespace Express {
         interface Request {
             user?: {
-                id: string,
-                email: string,
-                name: string,
-                emailVerified: boolean,
-                role: string,
-                address : string,
-                phone : string
-            }
+                id: string;
+                email: string;
+                name: string;
+                emailVerified: boolean;
+                role: UserRole;
+                address: string;
+                phone: string;
+            };
         }
     }
 }
+
+// Auth middleware
 export const auth = (...roles: UserRole[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        console.log(roles);
         try {
+            // Get session from betterAuth
             const session = await betterAuth.api.getSession({
-                headers: req.headers as any
-            })
-            console.log(session);
+                headers: req.headers as any,
+            });
+
+            // No session => not logged in
             if (!session) {
                 return res.status(401).json({
                     success: false,
-                    message: "Your Are Not Autorized"
-                })
+                    message: "You are not authorized",
+                });
             }
+
+            // Email not verified
             if (!session.user.emailVerified) {
                 return res.status(401).json({
                     success: false,
-                    message: "Email Verifcation Required. Please verify your email"
-                })
+                    message: "Email verification required",
+                });
             }
+
+            // Make sure role exists in session
+            const userRole = (session.user as any).role as UserRole;
+            if (!userRole) {
+                return res.status(403).json({
+                    success: false,
+                    message: "User role not found in session",
+                });
+            }
+
+            // Attach user to req
             req.user = {
                 id: session.user.id,
                 email: session.user.email,
                 name: session.user.name,
-                role: (session.user as any).role as string,
+                role: userRole,
                 emailVerified: session.user.emailVerified,
-                address : session.user.address  as string,
-                phone : session.user.phone  as string
-            }
-            // checker for admin 
-            if (!roles.length && !roles.includes(req.user.role as UserRole)) {
-                return res.status(401).json({
-                    success: false,
-                    message: "Forbidden Access! You Don't have permission for Access"
-                })
-            }
+                address: session.user.address ?? "",
+                phone: session.user.phone ?? "",
+            };
+
+            // Role check
+            // if (roles.length && !roles.includes(req.user.role)) {
+            //     return res.status(403).json({
+            //         success: false,
+            //         message: "Forbidden access! You don't have permission",
+            //     });
+            // }
+
+            // All good, next middleware/controller
             next();
         } catch (err) {
-            next(err)
+            console.error("Auth middleware error:", err);
+            next(err);
         }
-    }
-}
+    };
+};
