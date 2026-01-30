@@ -4,7 +4,7 @@ import { medicineService } from "./medicine.service";
 
 const createMedicine = async (req: Request, res: Response) => {
     try {
-        const { name, price, stock, categoryId, description, manufacturer, dosage, imageUrl } = req.body;
+        const { name, price, stock, categoryId, description, manufacturer, dosage, imageUrl, slug } = req.body;
 
         const sellerId = req.user?.id;
         if (!sellerId) {
@@ -15,9 +15,9 @@ const createMedicine = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Required fields missing" });
         }
 
-                
+
         const medicine = await medicineService.createMedicineService({
-            name, price, stock: stock ?? 0, categoryId, sellerId, description: description ?? null, manufacturer, dosage: dosage ?? null, imageUrl,
+            name, price, stock: stock ?? 0, categoryId, sellerId, description: description ?? null, manufacturer, dosage: dosage ?? null, imageUrl, slug
         });
 
         return res.status(201).json(medicine);

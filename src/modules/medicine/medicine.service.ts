@@ -10,23 +10,25 @@ export interface CreateMedicineInput {
   manufacturer: string;
   dosage?: string | null;
   imageUrl: string;
+  slug: string;
 }
 
-const createMedicineService = async  (data : CreateMedicineInput) => {
+const createMedicineService = async (data: CreateMedicineInput) => {
   return await prisma.medicine.create({
-    data : {
-        name : data.name,
-        price : data.price,
-        stock : data.stock ?? 0,
-        categoryId : data.categoryId,
-        sellerId : data.sellerId,
-        description : data.description ?? null,
-        manufacturer : data.manufacturer,
-        dosage : data.dosage ?? null,
-        imageUrl : data.imageUrl
+    data: {
+      name: data.name,
+      price: data.price,
+      stock: data.stock ?? 0,
+      categoryId: data.categoryId,
+      sellerId: data.sellerId,
+      description: data.description ?? null,
+      manufacturer: data.manufacturer,
+      dosage: data.dosage ?? null,
+      imageUrl: data.imageUrl,
+      slug: data.slug
     }
   })
-} 
- export const medicineService = {
-     createMedicineService
- }
+}
+export const medicineService = {
+  createMedicineService
+}
