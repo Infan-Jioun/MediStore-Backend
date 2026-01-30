@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -7,8 +6,6 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
-
 
 enum OrderStatus {
   PLACED
@@ -28,6 +25,9 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  role      String?  @default("USER")
+  phone     String?
+  address String? 
 
   medicines Medicine[] @relation("SellerToMedicines")
   orders    Order[]    @relation("CustomerToOrders")

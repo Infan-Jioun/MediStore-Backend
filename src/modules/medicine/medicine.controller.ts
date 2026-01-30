@@ -15,7 +15,7 @@ const createMedicine = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Required fields missing" });
         }
 
-
+                
         const medicine = await medicineService.createMedicineService({
             name, price, stock: stock ?? 0, categoryId, sellerId, description: description ?? null, manufacturer, dosage: dosage ?? null, imageUrl,
         });
