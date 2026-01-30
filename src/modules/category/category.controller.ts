@@ -19,6 +19,17 @@ const createCategoryController = async (req: Request, res: Response) => {
         })
     }
 }
+const getCategoryController = async (res: Response, req: Request) => {
+    try {
+        const categories = await categoryService.getCategoryService();
+        return res.status(201).json(categories);
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to get category"
+        })
+    }
+}
 export const categoryContoller = {
-    createCategoryController
+    createCategoryController,
+    getCategoryController
 }
