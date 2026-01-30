@@ -8,11 +8,7 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  CUSTOMER
-  SELLER
-  ADMIN
-}
+
 
 enum OrderStatus {
   PLACED
@@ -26,7 +22,6 @@ model User {
   id            String  @id @default(uuid())
   name          String?
   email         String  @unique
-  role          Role    @default(CUSTOMER)
   isBanned      Boolean @default(false)
   emailVerified Boolean @default(false)
   image         String?
