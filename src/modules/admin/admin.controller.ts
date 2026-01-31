@@ -29,7 +29,18 @@ const updateUserStatus = async (req: Request, res: Response) => {
         })
     }
 }
+const getAllMedicines = async (req: Request, res: Response) => {
+    try {
+        const medicine = await adminService.getAllMedicines()
+        return res.status(200).json(medicine)
+    } catch (err) {
+        res.status(500).json({
+            message: "somthing went wrong"
+        })
+    }
+}
 export const adminController = {
     getAllUsers,
-    updateUserStatus
+    updateUserStatus,
+    getAllMedicines
 }
