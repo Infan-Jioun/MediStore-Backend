@@ -19,24 +19,17 @@ const updateUserStatus = async (id: string, isBanned: "ACTIVE" | "BANNED") => {
         data: { isBanned }
     })
 }
-const getAllMedicines = async () => {
-    return await prisma.medicine.findMany({
-        include: {
-            seller: {
-                select: { id: true, email: true, name: true },
-            },
-            category: {
-                select: {
-                    id: true, name: true
-
-                }
-            }
-        },
-        orderBy: { createdAt: "desc" }
+const getCategoryService = async () => {
+    return await prisma.category.findMany({
+        orderBy: {
+            createdAt: "desc"
+        }
     })
 }
+
 export const adminService = {
     getAllUsers,
     updateUserStatus,
-    getAllMedicines
+    getCategoryService
+
 }

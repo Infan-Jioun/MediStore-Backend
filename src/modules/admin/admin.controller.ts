@@ -29,18 +29,20 @@ const updateUserStatus = async (req: Request, res: Response) => {
         })
     }
 }
-const getAllMedicines = async (req: Request, res: Response) => {
+const getCategory = async (req: Request, res: Response) => {
     try {
-        const medicine = await adminService.getAllMedicines()
-        return res.status(200).json(medicine)
+        const categories = await adminService.getCategoryService();
+        return res.status(200).json(categories);
+
     } catch (err) {
         res.status(500).json({
-            message: "somthing went wrong"
+            message: "Failed to get category"
         })
     }
 }
 export const adminController = {
     getAllUsers,
     updateUserStatus,
-    getAllMedicines
+    getCategory
+
 }

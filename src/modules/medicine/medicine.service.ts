@@ -29,6 +29,23 @@ const createMedicineService = async (data: CreateMedicineInput) => {
     }
   })
 }
+const getAllMedicines = async () => {
+  return await prisma.medicine.findMany({
+    include: {
+      seller: {
+        select: { id: true, email: true, name: true },
+      },
+      category: {
+        select: {
+          id: true, name: true
+
+        }
+      }
+    },
+    orderBy: { createdAt: "desc" }
+  })
+}
 export const medicineService = {
-  createMedicineService
+  createMedicineService,
+  getAllMedicines
 }
