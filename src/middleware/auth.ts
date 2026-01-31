@@ -24,16 +24,16 @@ declare global {
     }
 }
 
-// Auth middleware
+
 export const auth = (...roles: UserRole[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // Get session from betterAuth
+
             const session = await betterAuth.api.getSession({
                 headers: req.headers as any,
             });
 
-            // No session => not logged in
+
             if (!session) {
                 return res.status(401).json({
                     success: false,
@@ -41,7 +41,7 @@ export const auth = (...roles: UserRole[]) => {
                 });
             }
 
-            // Email not verified
+           // Email not verified
             if (!session.user.emailVerified) {
                 return res.status(401).json({
                     success: false,
@@ -49,7 +49,7 @@ export const auth = (...roles: UserRole[]) => {
                 });
             }
 
-            // Make sure role exists in session
+     
             const userRole = (session.user as any).role as UserRole;
             if (!userRole) {
                 return res.status(403).json({
@@ -58,7 +58,7 @@ export const auth = (...roles: UserRole[]) => {
                 });
             }
 
-            // Attach user to req
+          
             req.user = {
                 id: session.user.id,
                 email: session.user.email,
@@ -69,15 +69,15 @@ export const auth = (...roles: UserRole[]) => {
                 phone: session.user.phone ?? "",
             };
 
-            // Role check
-            // if (roles.length && !roles.includes(req.user.role)) {
-            //     return res.status(403).json({
-            //         success: false,
-            //         message: "Forbidden access! You don't have permission",
-            //     });
-            // }
+           
+            if (roles.length && !roles.includes(req.user.role)) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden access! You don't have permission",
+                });
+            }
 
-            // All good, next middleware/controller
+     
             next();
         } catch (err) {
             console.error("Auth middleware error:", err);
