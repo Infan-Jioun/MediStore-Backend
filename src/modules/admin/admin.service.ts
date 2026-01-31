@@ -39,11 +39,17 @@ const getCategoryService = async () => {
         }
     })
 }
-
+const updateCategory = async (id: string, name: string) => {
+    return await prisma.category.update({
+        where: { id },
+        data: { name, slug: name.toLowerCase().replace(/\s+/g, "-") },
+    })
+}
 export const adminService = {
     getAllUsers,
     updateUserStatus,
     getCategoryService,
-    createCategoryService
+    createCategoryService,
+    updateCategory
 
 }

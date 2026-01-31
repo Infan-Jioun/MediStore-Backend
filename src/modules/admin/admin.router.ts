@@ -7,6 +7,7 @@ router.get("/users", auth(UserRole.ADMIN), adminController.getAllUsers)
 router.patch("/users/:id", auth(UserRole.ADMIN), adminController.updateUserStatus)
 router.post("/categories", auth(UserRole.ADMIN), adminController.createCategoryController)
 router.get("/categories", auth(UserRole.ADMIN), adminController.getCategory)
+router.patch("/categories/:id", auth(UserRole.ADMIN), adminController.updateCategory)
 
 
 export const adminRouter: Router = router;

@@ -58,11 +58,29 @@ const getCategory = async (req: Request, res: Response) => {
         })
     }
 }
+const updateCategory = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        if (!name) {
+            return res.status(401).json({
+                message: "provide your categories name "
+            })
+        }
+        const result = await adminService.updateCategory(id as string, name);
+        return res.status(200).json(result)
+    } catch (err) {
+        res.status(500).json({
+            message: "failed to update "
+        })
+    }
+}
 export const adminController = {
     getAllUsers,
     updateUserStatus,
     createCategoryController,
     getCategory,
+    updateCategory
 
 
 }
