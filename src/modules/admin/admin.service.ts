@@ -13,6 +13,13 @@ const getAllUsers = async () => {
         }
     })
 }
+const updateUserStatus = async (id: string, isBanned: "ACTIVE" | "BANNED") => {
+    return await prisma.user.update({
+        where: { id },
+        data: { isBanned }
+    })
+}
 export const adminService = {
-    getAllUsers
+    getAllUsers,
+    updateUserStatus
 }
