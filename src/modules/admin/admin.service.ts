@@ -1,3 +1,4 @@
+import { is } from "zod/locales"
 import { prisma } from "../../lib/prisma"
 export interface CreateCategoryInput {
     name: string
@@ -34,6 +35,9 @@ const createCategoryService = async (data: CreateCategoryInput) => {
 
 const getCategoryService = async () => {
     return await prisma.category.findMany({
+        include: {
+            medicines: true
+        },
         orderBy: {
             createdAt: "desc"
         }
@@ -45,11 +49,33 @@ const updateCategory = async (id: string, name: string) => {
         data: { name, slug: name.toLowerCase().replace(/\s+/g, "-") },
     })
 }
+
+const deleteCategory = async (id: string) => {
+    const category = await prisma.category.findUniqueOrThrow({
+        where: { id },
+        select: {
+            id: true,
+            medicines: true
+        }
+    })
+
+    if (category.medicines.length > 0) {
+        throw new Error("Cannot delete category with medicines...")
+    }
+
+    return prisma.category.delete({
+        where: { id }
+    })
+}
+
+
+
 export const adminService = {
     getAllUsers,
     updateUserStatus,
     getCategoryService,
     createCategoryService,
-    updateCategory
+    updateCategory,
+    deleteCategory
 
 }

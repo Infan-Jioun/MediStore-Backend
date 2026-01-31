@@ -7,8 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
-
 enum OrderStatus {
   PLACED
   PROCESSING
@@ -21,19 +19,18 @@ model User {
   id            String  @id @default(uuid())
   name          String?
   email         String  @unique
-  emailVerified Boolean @default(false)
+  emailVerified Boolean @default(true)
   image         String?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      String?  @default("CUSTOMER")
-  isBanned      String?  @default("ACTIVE")
+  isBanned  String?  @default("ACTIVE")
   phone     String?
   address   String?
 
-  medicines Medicine[] @relation("SellerToMedicines")
-  orders    Order[]    @relation("CustomerToOrders")
-  reviews   Review[]   @relation("UserToReviews")
+  medicines Medicine[]
+  orders    Order[]    
+  reviews   Review[]  
 
   sessions Session[]
   accounts Account[]
@@ -48,7 +45,7 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  medicines Medicine[] @relation("CategoryToMedicines")
+  medicines Medicine[] 
 
   @@map("category")
 }
@@ -69,10 +66,10 @@ model Medicine {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  seller     User        @relation("SellerToMedicines", fields: [sellerId], references: [id], onDelete: Cascade)
-  category   Category    @relation("CategoryToMedicines", fields: [categoryId], references: [id], onDelete: Restrict)
+  seller     User        @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  category   Category    @relation( fields: [categoryId], references: [id], onDelete: Restrict)
   orderItems OrderItem[]
-  reviews    Review[]    @relation("MedicineToReviews")
+  reviews    Review[]    
 
   @@map("medicine")
 }
@@ -87,7 +84,7 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer User        @relation("CustomerToOrders", fields: [customerId], references: [id], onDelete: Cascade)
+  customer User        @relation( fields: [customerId], references: [id], onDelete: Cascade)
   items    OrderItem[]
 
   @@map("order")
@@ -115,8 +112,8 @@ model Review {
   comment    String?
   createdAt  DateTime @default(now())
 
-  user     User     @relation("UserToReviews", fields: [userId], references: [id], onDelete: Cascade)
-  medicine Medicine @relation("MedicineToReviews", fields: [medicineId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  medicine Medicine @relation( fields: [medicineId], references: [id], onDelete: Cascade)
 
   @@unique([userId, medicineId])
   @@map("review")

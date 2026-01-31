@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { adminService } from "./admin.service";
+import { UserRole } from "../../middleware/auth";
 
 const getAllUsers = async (req: Request, res: Response) => {
     const users = await adminService.getAllUsers();
@@ -75,12 +76,24 @@ const updateCategory = async (req: Request, res: Response) => {
         })
     }
 }
+const deleteCategory = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await adminService.deleteCategory(id as string)
+        return res.status(200).json(result)
+    } catch (err) {
+        res.status(500).json({
+            message: "something went wrong..."
+        })
+    }
+}
 export const adminController = {
     getAllUsers,
     updateUserStatus,
     createCategoryController,
     getCategory,
-    updateCategory
+    updateCategory,
+    deleteCategory
 
 
 }

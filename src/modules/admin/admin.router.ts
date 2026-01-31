@@ -8,6 +8,8 @@ router.patch("/users/:id", auth(UserRole.ADMIN), adminController.updateUserStatu
 router.post("/categories", auth(UserRole.ADMIN), adminController.createCategoryController)
 router.get("/categories", auth(UserRole.ADMIN), adminController.getCategory)
 router.patch("/categories/:id", auth(UserRole.ADMIN), adminController.updateCategory)
+router.delete("/categories/:id", auth(UserRole.ADMIN), adminController.deleteCategory)
+
 
 
 export const adminRouter: Router = router;
