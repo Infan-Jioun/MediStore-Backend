@@ -29,6 +29,24 @@ const updateUserStatus = async (req: Request, res: Response) => {
         })
     }
 }
+const createCategoryController = async (req: Request, res: Response) => {
+    try {
+        const { name, slug } = req.body;
+        if (!name) {
+            return res.status(400).json({
+                message: "Category name is required "
+            })
+        }
+        const category = await adminService.createCategoryService({
+            name, slug
+        })
+        return res.status(201).json(category);
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to create category"
+        })
+    }
+}
 const getCategory = async (req: Request, res: Response) => {
     try {
         const categories = await adminService.getCategoryService();
@@ -43,6 +61,8 @@ const getCategory = async (req: Request, res: Response) => {
 export const adminController = {
     getAllUsers,
     updateUserStatus,
-    getCategory
+    createCategoryController,
+    getCategory,
+
 
 }

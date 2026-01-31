@@ -1,5 +1,8 @@
 import { prisma } from "../../lib/prisma"
-
+export interface CreateCategoryInput {
+    name: string
+    slug: string
+}
 const getAllUsers = async () => {
     return await prisma.user.findMany({
         select: {
@@ -19,6 +22,16 @@ const updateUserStatus = async (id: string, isBanned: "ACTIVE" | "BANNED") => {
         data: { isBanned }
     })
 }
+
+const createCategoryService = async (data: CreateCategoryInput) => {
+    return await prisma.category.create({
+        data: {
+            name: data.name,
+            slug: data.slug
+        }
+    })
+}
+
 const getCategoryService = async () => {
     return await prisma.category.findMany({
         orderBy: {
@@ -30,6 +43,7 @@ const getCategoryService = async () => {
 export const adminService = {
     getAllUsers,
     updateUserStatus,
-    getCategoryService
+    getCategoryService,
+    createCategoryService
 
 }
