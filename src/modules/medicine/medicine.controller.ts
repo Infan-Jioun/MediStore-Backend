@@ -38,7 +38,8 @@ const getAllMedicines = async (req: Request, res: Response) => {
 }
 const getMedicinesById = async (req: Request, res: Response) => {
     try {
-        const medicine = await medicineService.getMedicinedById(req.params.id as string)
+        const medicinedata = await medicineService.getMedicinedById(req.params.id as string);
+        return res.status(200).json(medicinedata)
     } catch (err) {
         res.status(500).json({
             message: "somthing went wrong"
