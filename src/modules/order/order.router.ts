@@ -1,0 +1,6 @@
+import express, { Router } from "express";
+import { orderController } from "./order.controller";
+import { auth, UserRole } from "../../middleware/auth";
+const router = express.Router();
+router.post("/", auth(UserRole.CUSTOMER, UserRole.ADMIN, UserRole.SELLER), orderController.createOrder)
+export const orderRouter: Router = router;
