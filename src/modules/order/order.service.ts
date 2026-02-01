@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { UserRole } from "../../middleware/auth";
 interface MedicineItem {
     medicineId: string;
     quantity: number;
@@ -57,6 +58,42 @@ const createOrder = async (userId: string, payload: OrderPaylaod) => {
 
     })
 }
+const getOrders = async (userId: string) => {
+    return await prisma.order.findMany({
+        where: { customerId: userId },
+        include: {
+            items: {
+                include: {
+                    medicine: true
+                }
+            }
+        },
+        orderBy: { createdAt: "desc" }
+
+    })
+
+}
+const getOrdersById = async (orderId: string, user: any) => {
+    const order = await prisma.order.findUniqueOrThrow({
+        where: { id: orderId },
+        include: {
+            items: {
+                include: {
+                    medicine: true
+                }
+            }
+        }
+    });
+    if (!order) {
+        throw new Error("Your Order Not Found...")
+    }
+    if (order.customerId !== user.id && user.role !== UserRole.ADMIN) {
+        throw new Error("Frobidden Access")
+    }
+    return order
+}
 export const orderService = {
-    createOrder
+    createOrder,
+    getOrders,
+    getOrdersById
 }
