@@ -1,6 +1,7 @@
 import type { Request, Response } from "express"
 import { sellerService } from "./seller.service"
 
+
 const createMedicines = async (req: Request, res: Response) => {
     try {
         const sellerId = req.user?.id;
@@ -26,7 +27,22 @@ const updateMedicines = async (req: Request, res: Response) => {
         })
     }
 }
+const deleteMedicines = async (req: Request, res: Response) => {
+    try {
+        const sellerId = req.user?.id;
+        const { id } = req.params;
+        const medicine = await sellerService.deleteMedicines(sellerId as string, id as string)
+        return res.status(200).json(medicine)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Delete failed",
+
+        })
+    }
+}
 export const sellerController = {
     createMedicines,
-    updateMedicines
+    updateMedicines,
+    deleteMedicines
 }

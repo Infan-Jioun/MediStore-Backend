@@ -35,16 +35,39 @@ const updateMedicines = async (sellerId: string, medicineId: string, payload: Me
         }
     });
     if (!medicine) {
-        throw new Error("Medicine not found or you are not authorized");
+        throw new Error("Medicine not found...");
     }
+
     return await prisma.medicine.update({
         where: { id: medicineId },
         data: payload
     })
 
 }
+const deleteMedicines = async (sellerId: string, medicineId: string) => {
+    const medicine = await prisma.medicine.findFirst({
+        where: {
+            id: medicineId,
+            sellerId
+        }
+    });
+    if (!medicine) {
+        throw new Error("Medicine not found...");
+    }
+    if (!sellerId) {
+        throw new Error("Medicine not found or you are not authorized to delete");
+    }
+    const deleteMedicines = await prisma.medicine.delete({
+        where: {
+            id: medicineId,
+            sellerId
+        }
+    })
+    return deleteMedicines;
+}
 
 export const sellerService = {
     createMedicine,
-    updateMedicines
+    updateMedicines,
+    deleteMedicines
 } 
