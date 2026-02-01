@@ -45,7 +45,25 @@ const getAllMedicines = async () => {
     orderBy: { createdAt: "desc" }
   })
 }
+const getMedicinedById = async (id: string) => {
+  const medcine = await prisma.medicine.findUniqueOrThrow({
+    where: { id },
+    include: {
+      category: true,
+      seller: {
+        select: {
+          id: true,
+          name: true
+        }
+      }
+    }
+  })
+  if (!medcine) {
+    throw new Error("Medinens not found....")
+  }
+}
 export const medicineService = {
   createMedicineService,
-  getAllMedicines
+  getAllMedicines,
+  getMedicinedById
 }

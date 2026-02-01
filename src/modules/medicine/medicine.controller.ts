@@ -36,7 +36,17 @@ const getAllMedicines = async (req: Request, res: Response) => {
         })
     }
 }
+const getMedicinesById = async (req: Request, res: Response) => {
+    try {
+        const medicine = await medicineService.getMedicinedById(req.params.id as string)
+    } catch (err) {
+        res.status(500).json({
+            message: "somthing went wrong"
+        })
+    }
+}
 export const medicineController = {
     createMedicine,
-    getAllMedicines
+    getAllMedicines,
+    getMedicinesById
 };
