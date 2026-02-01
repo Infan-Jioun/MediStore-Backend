@@ -41,8 +41,28 @@ const deleteMedicines = async (req: Request, res: Response) => {
         })
     }
 }
+const getSellerOrders = async (req: Request, res: Response) => {
+    try {
+        const sellerId = req.user?.id;
+        if (!sellerId) {
+            return res.status(400).json({
+                message: "you are authorized seller"
+            })
+        }
+        const orders = await sellerService.getSellerOrders(sellerId as string)
+        return res.status(200).json(orders)
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Orders gets failed",
+
+        })
+    }
+}
 export const sellerController = {
     createMedicines,
     updateMedicines,
-    deleteMedicines
+    deleteMedicines,
+    getSellerOrders
 }

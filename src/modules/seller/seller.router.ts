@@ -5,5 +5,6 @@ const router = express.Router();
 router.post("/medicines", auth(UserRole.SELLER), sellerController.createMedicines)
 router.put("/medicines/:id", auth(UserRole.SELLER), sellerController.updateMedicines)
 router.delete("/medicines/:id", auth(UserRole.SELLER), sellerController.deleteMedicines)
+router.get("/orders", auth(UserRole.SELLER), sellerController.getSellerOrders)
 export const sellerRouter: Router = router
 
