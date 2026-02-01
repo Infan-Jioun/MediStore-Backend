@@ -60,9 +60,25 @@ const getSellerOrders = async (req: Request, res: Response) => {
         })
     }
 }
+const updateStatusOrder = async (req: Request, res: Response) => {
+    try {
+        const sellerId = req.user?.id;
+        const { id } = req.params;
+        const { status } = req.body;
+        const order = await sellerService.updateStatusOrder(sellerId as string, id as string, status);
+        return res.status(200).json(order)
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: "Orders update failed",
+
+        })
+    }
+}
 export const sellerController = {
     createMedicines,
     updateMedicines,
     deleteMedicines,
-    getSellerOrders
+    getSellerOrders,
+    updateStatusOrder
 }

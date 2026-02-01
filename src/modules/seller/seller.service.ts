@@ -1,3 +1,4 @@
+import type { OrderStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma"
 type MedicinePayload = {
     name?: string;
@@ -88,9 +89,29 @@ const getSellerOrders = async (sellerId: string) => {
     })
 
 }
+const updateStatusOrder = async (sellerId: string, orderId: string, status: OrderStatus
+) => {
+    const order = await prisma.order.findFirstOrThrow({
+        where: {
+            id: orderId,
+            items: {
+                some: {
+                    medicine: {
+                        sellerId
+                    }
+                }
+            }
+        }
+    });
+    return await prisma.order.update({
+        where: { id: order.id },
+        data: { status }
+    })
+}
 export const sellerService = {
     createMedicine,
     updateMedicines,
     deleteMedicines,
-    getSellerOrders
+    getSellerOrders,
+    updateStatusOrder
 } 
