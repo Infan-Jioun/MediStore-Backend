@@ -23,7 +23,6 @@ async function seedAdmin() {
                 email,
                 // password: hashedPassword,
                 role: UserRole.ADMIN,
-                emailVerified: true,
             },
         });
 

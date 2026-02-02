@@ -7,7 +7,7 @@ export enum UserRole {
     CUSTOMER = "CUSTOMER",
 }
 
-// Extend Express Request type
+
 declare global {
     namespace Express {
         interface Request {
@@ -15,7 +15,6 @@ declare global {
                 id: string;
                 email: string;
                 name: string;
-                emailVerified: boolean;
                 role: UserRole;
                 address: string;
                 phone: string;
@@ -31,6 +30,7 @@ export const auth = (...roles: UserRole[]) => {
 
             const session = await betterAuth.api.getSession({
                 headers: req.headers as any,
+                
             });
 
 
@@ -38,14 +38,6 @@ export const auth = (...roles: UserRole[]) => {
                 return res.status(401).json({
                     success: false,
                     message: "You are not authorized",
-                });
-            }
-
-           // Email not verified
-            if (!session.user.emailVerified) {
-                return res.status(401).json({
-                    success: false,
-                    message: "Email verification required",
                 });
             }
 
@@ -64,7 +56,6 @@ export const auth = (...roles: UserRole[]) => {
                 email: session.user.email,
                 name: session.user.name,
                 role: userRole,
-                emailVerified: session.user.emailVerified,
                 address: session.user.address ?? "",
                 phone: session.user.phone ?? "",
             };

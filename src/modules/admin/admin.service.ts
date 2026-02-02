@@ -12,7 +12,6 @@ const getAllUsers = async () => {
             email: true,
             role: true,
             isBanned: true,
-            emailVerified: true,
             createdAt: true
         }
     })

@@ -7,14 +7,16 @@ import { adminRouter } from "./modules/admin/admin.router";
 import { categoryRouter } from "./modules/category/category.router";
 import { orderRouter } from "./modules/order/order.router";
 import { sellerRouter } from "./modules/seller/seller.router";
+import { authRouter } from "./modules/auth/auth.Router";
 export const app: Application = express()
-// app.use(cors({
-//     origin: process.env.APP_URL,
-//     credentials: true
-// }))
+app.use(cors({
+    origin: process.env.APP_URL || "http://localhost:3000",
+    credentials: true
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/auth", authRouter);
 app.all('/api/auth/*splat', toNodeHandler(auth));
 app.use("/api/admin", adminRouter)
 app.use("/api/seller", sellerRouter)

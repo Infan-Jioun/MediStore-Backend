@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+
 }
 
 enum OrderStatus {
@@ -16,21 +17,20 @@ enum OrderStatus {
 }
 
 model User {
-  id            String  @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String?
-  email         String  @unique
-  emailVerified Boolean @default(true)
+  email         String     @unique
   image         String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      String?  @default("CUSTOMER")
-  isBanned  String?  @default("ACTIVE")
-  phone     String?
-  address   String?
-
-  medicines Medicine[]
-  orders    Order[]    
-  reviews   Review[]  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  role          String?    @default("CUSTOMER")
+  isBanned      String?    @default("ACTIVE")
+  phone         String?
+  address       String?
+  emailVerified Boolean?
+  medicines     Medicine[]
+  orders        Order[]
+  reviews       Review[]
 
   sessions Session[]
   accounts Account[]
@@ -45,7 +45,7 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  medicines Medicine[] 
+  medicines Medicine[]
 
   @@map("category")
 }
@@ -67,9 +67,9 @@ model Medicine {
   updatedAt DateTime @updatedAt
 
   seller     User        @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  category   Category    @relation( fields: [categoryId], references: [id], onDelete: Restrict)
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   orderItems OrderItem[]
-  reviews    Review[]    
+  reviews    Review[]
 
   @@map("medicine")
 }
@@ -84,7 +84,7 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer User        @relation( fields: [customerId], references: [id], onDelete: Cascade)
+  customer User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
   items    OrderItem[]
 
   @@map("order")
@@ -113,7 +113,7 @@ model Review {
   createdAt  DateTime @default(now())
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  medicine Medicine @relation( fields: [medicineId], references: [id], onDelete: Cascade)
+  medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
 
   @@unique([userId, medicineId])
   @@map("review")

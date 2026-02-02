@@ -8,8 +8,8 @@ async function main() {
             console.log(`Server is running on http://localhost:${PORT}`);
 
         })
-    } catch {
-        console.error("Doesn't connect to database");
+    } catch (error) {
+        console.error("Doesn't connect to database", error);
         await prisma.$disconnect();
         process.exit(1)
     }
