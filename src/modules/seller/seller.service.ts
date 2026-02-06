@@ -28,6 +28,34 @@ const createMedicine = async (sellerId: string, payload: any) => {
         }
     })
 }
+const getSellerMedicines = async (sellerId: string) => {
+    return await prisma.medicine.findMany({
+        where: {
+            sellerId,
+        },
+        include: {
+            category: {
+                select: {
+                    id: true,
+                    name: true,
+
+                },
+            },
+
+        },
+        orderBy: [
+            { createdAt: "desc" },
+
+        ],
+    });
+};
+const getMedicineById = async (id: string, sellerId: string) => {
+    const medicine = await prisma.medicine.findUnique({
+        where: { id },
+    });
+    if (medicine && medicine.sellerId !== sellerId) return null;
+    return medicine;
+}
 const updateMedicines = async (sellerId: string, medicineId: string, payload: MedicinePayload) => {
     const medicine = await prisma.medicine.findFirst({
         where: {
@@ -110,6 +138,8 @@ const updateStatusOrder = async (sellerId: string, orderId: string, status: Orde
 }
 export const sellerService = {
     createMedicine,
+    getSellerMedicines,
+    getMedicineById,
     updateMedicines,
     deleteMedicines,
     getSellerOrders,

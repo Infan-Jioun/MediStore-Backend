@@ -15,7 +15,7 @@ const createOrder = async (req: Request, res: Response) => {
 }
 const getOrders = async (req: Request, res: Response) => {
     try {
-        const { userId } = req.body
+        const userId = req.user!.id;
         const order = await orderService.getOrders(userId as string);
         return res.status(200).json(order)
     } catch (err) {

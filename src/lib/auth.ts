@@ -6,7 +6,8 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  trustedOrigins: [process.env.APP_URL! || "https://medi-store-frontend-seven.vercel.app"],
+  trustedOrigins: [process.env.APP_URL! || "http://localhost:5000"],
+
   user: {
     additionalFields: {
       address: {
@@ -30,7 +31,13 @@ export const auth = betterAuth({
     }
 
   },
+  cookies: {
+    secure: true,
+    sameSite: "none",
+    httpOnly: true,
+    path: "/"
 
+  },
   emailAndPassword: {
     enabled: true,
   },

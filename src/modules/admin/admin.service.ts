@@ -3,6 +3,7 @@ import { prisma } from "../../lib/prisma"
 export interface CreateCategoryInput {
     name: string
     slug: string
+    image: string
 }
 const getAllUsers = async () => {
     return await prisma.user.findMany({
@@ -27,7 +28,9 @@ const createCategoryService = async (data: CreateCategoryInput) => {
     return await prisma.category.create({
         data: {
             name: data.name,
-            slug: data.slug
+            slug: data.slug,
+            image: data.image
+
         }
     })
 }
@@ -42,10 +45,10 @@ const getCategoryService = async () => {
         }
     })
 }
-const updateCategory = async (id: string, name: string) => {
+const updateCategory = async (id: string, name: string, image: string) => {
     return await prisma.category.update({
         where: { id },
-        data: { name, slug: name.toLowerCase().replace(/\s+/g, "-") },
+        data: { name, image, slug: name.toLowerCase().replace(/\s+/g, "-") },
     })
 }
 

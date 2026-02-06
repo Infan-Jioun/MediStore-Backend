@@ -8,6 +8,7 @@ import { categoryRouter } from "./modules/category/category.router";
 import { orderRouter } from "./modules/order/order.router";
 import { sellerRouter } from "./modules/seller/seller.router";
 import { authRouter } from "./modules/auth/auth.Router";
+import { ReviewRouter } from "./modules/reviews/review.router";
 export const app: Application = express()
 app.use(cors({
     origin: process.env.APP_URL || "http://localhost:3000",
@@ -23,9 +24,7 @@ app.use("/api/seller", sellerRouter)
 app.use("/api/medicines", medicineRouter)
 app.use("/api/categories", categoryRouter)
 app.use("/api/orders", orderRouter)
+app.use("/api/reviews", ReviewRouter)
 app.get("/", (req, res) => {
     res.send("Succesfullt MediStore Server Runing... ")
 })
-
-
-

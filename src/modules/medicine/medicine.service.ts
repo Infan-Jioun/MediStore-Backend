@@ -61,6 +61,7 @@ const getMedicinedById = async (id: string) => {
   if (!medcine) {
     throw new Error("Medinens not found....")
   }
+  return medcine;
 }
 export const medicineService = {
   createMedicineService,
