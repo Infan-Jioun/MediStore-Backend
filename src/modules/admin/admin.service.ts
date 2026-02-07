@@ -1,5 +1,6 @@
 import { is } from "zod/locales"
 import { prisma } from "../../lib/prisma"
+import { UserRole } from "../../middleware/auth"
 export interface CreateCategoryInput {
     name: string
     slug: string
@@ -45,6 +46,35 @@ const getCategoryService = async () => {
         }
     })
 }
+const getOrders = async (user: any) => {
+    if (user.role === UserRole.ADMIN) {
+        return prisma.order.findMany({
+            include: {
+                items: {
+                    include: {
+                        medicine: true,
+                    },
+                },
+                customer: true,
+            },
+            orderBy: { createdAt: "desc" },
+        })
+    }
+
+
+    return prisma.order.findMany({
+        where: { customerId: user.id },
+        include: {
+            items: {
+                include: {
+                    medicine: true,
+                },
+            },
+        },
+        orderBy: { createdAt: "desc" },
+    })
+}
+
 const updateCategory = async (id: string, name: string, image: string) => {
     return await prisma.category.update({
         where: { id },
@@ -76,6 +106,7 @@ export const adminService = {
     getAllUsers,
     updateUserStatus,
     getCategoryService,
+    getOrders,
     createCategoryService,
     updateCategory,
     deleteCategory

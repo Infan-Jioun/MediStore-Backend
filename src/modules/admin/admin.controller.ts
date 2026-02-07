@@ -60,6 +60,15 @@ const getCategory = async (req: Request, res: Response) => {
         })
     }
 }
+const getOrders = async (req: Request, res: Response) => {
+    try {
+        const orders = await adminService.getOrders(req.user)
+        return res.status(200).json(orders)
+    } catch (err) {
+        res.status(500).json({ message: "Get failed" })
+    }
+}
+
 const updateCategory = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -93,6 +102,7 @@ export const adminController = {
     updateUserStatus,
     createCategoryController,
     getCategory,
+    getOrders,
     updateCategory,
     deleteCategory
 

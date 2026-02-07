@@ -13,6 +13,17 @@ const createReview = async (userId: string, medicineId: string, rating: number,
     });
 };
 
+const getMyReviews = (userId: string) => {
+    return prisma.review.findMany({
+        where: { userId },
+        include: {
+            medicine: {
+                select: { id: true, name: true }
+            }
+        },
+        orderBy: { createdAt: "desc" },
+    })
+}
 const getReviewsByMedicine = async (medicineId: string) => {
     return prisma.review.findMany({
         where: { medicineId },
@@ -47,6 +58,7 @@ const deleteReview = async (userId: string, medicineId: string) => {
 
 export const ReviewService = {
     createReview,
+    getMyReviews,
     getReviewsByMedicine,
     getUserReview,
     updateReview,
