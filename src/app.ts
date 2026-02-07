@@ -11,7 +11,7 @@ import { authRouter } from "./modules/auth/auth.Router";
 import { ReviewRouter } from "./modules/reviews/review.router";
 export const app: Application = express()
 app.use(cors({
-    origin: process.env.APP_URL || "http://localhost:3000",
+    origin: process.env.APP_URL || "https://medi-store-frontend-seven.vercel.app",
     credentials: true
 }))
 
