@@ -1,30 +1,25 @@
 import { prisma } from "../../lib/prisma";
-const createReview = async (userId: string, medicineId: string, rating: number,
-    comment: string) => {
+
+const createReview = async (userId: string,
+    medicineId: string,
+    rating: number,
+    comment: string
+) => {
     return prisma.review.create({
-
-        data: {
-            userId,
-            medicineId,
-            rating,
-            comment
-        },
-
+        data: { userId, medicineId, rating, comment },
+        include: { medicine: { select: { id: true, name: true } } },
     });
 };
 
 const getMyReviews = (userId: string) => {
     return prisma.review.findMany({
         where: { userId },
-        include: {
-            medicine: {
-                select: { id: true, name: true }
-            }
-        },
+        include: { medicine: { select: { id: true, name: true } } },
         orderBy: { createdAt: "desc" },
-    })
-}
-const getReviewsByMedicine = async (medicineId: string) => {
+    });
+};
+
+const getReviewsByMedicine = (medicineId: string) => {
     return prisma.review.findMany({
         where: { medicineId },
         include: { user: true },
@@ -32,29 +27,33 @@ const getReviewsByMedicine = async (medicineId: string) => {
     });
 };
 
-const getUserReview = async (userId: string, medicineId: string) => {
+const getUserReview = (userId: string, reviewId: string) => {
     return prisma.review.findUnique({
-        where: { userId_medicineId: { userId, medicineId } },
+        where: { id: reviewId },
     });
 };
 
-const updateReview = async (userId: string, medicineId: string, rating?: number, comment?: string) => {
+const updateReview = async (
+    userId: string,
+    reviewId: string,
+    rating?: number,
+    comment?: string
+) => {
     const data: Partial<{ rating: number; comment: string }> = {};
     if (rating !== undefined) data.rating = rating;
     if (comment !== undefined) data.comment = comment;
 
     return prisma.review.update({
-        where: { userId_medicineId: { userId, medicineId } },
+        where: { id: reviewId },
         data,
     });
 };
 
-const deleteReview = async (userId: string, medicineId: string) => {
+const deleteReview = async (userId: string, reviewId: string) => {
     return prisma.review.delete({
-        where: { userId_medicineId: { userId, medicineId } },
+        where: { id: reviewId },
     });
 };
-
 
 export const ReviewService = {
     createReview,

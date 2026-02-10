@@ -15,7 +15,6 @@ router.get("/medicine/:medicineId", auth(UserRole.CUSTOMER, UserRole.ADMIN, User
     ReviewController.getReviewsByMedicine
 )
 
-
 router.put("/:id", auth(UserRole.CUSTOMER), ReviewController.updateReview)
 
 

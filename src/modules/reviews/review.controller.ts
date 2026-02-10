@@ -1,29 +1,31 @@
 import { Request, Response } from "express";
 import { ReviewService } from "./review.service";
 
-
 const createReview = async (req: Request, res: Response) => {
     const { medicineId, rating, comment } = req.body;
-    const userId = req.user!.id;
+    const userId = req.user?.id;
     try {
-        const review = await ReviewService.createReview(userId as string, medicineId as string, rating as number, comment as string);
+        const review = await ReviewService.createReview(
+            userId as string,
+            medicineId,
+            rating,
+            comment
+        );
         res.status(201).json(review);
     } catch (err) {
-        res.status(500).json({
-            message: "somthing went wrong"
-        })
+        res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
+
 const getMyReviews = async (req: Request, res: Response) => {
     try {
-        const userId = req.user!.id
-        const reviews = await ReviewService.getMyReviews(userId as string)
-        res.json(reviews)
+        const userId = req.user?.id;
+        const reviews = await ReviewService.getMyReviews(userId as string);
+        res.json(reviews);
     } catch {
-        res.status(500).json({ message: "Failed to load reviews" })
+        res.status(500).json({ message: "Failed to load reviews" });
     }
-}
-
+};
 
 const getReviewsByMedicine = async (req: Request, res: Response) => {
     const { medicineId } = req.params;
@@ -31,46 +33,43 @@ const getReviewsByMedicine = async (req: Request, res: Response) => {
         const reviews = await ReviewService.getReviewsByMedicine(medicineId as string);
         res.status(200).json(reviews);
     } catch (err) {
-        res.status(500).json({
-            message: "somthing went wrong"
-        })
+        res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
 
 const updateReview = async (req: Request, res: Response) => {
-    const { medicineId } = req.params;
+    const { id } = req.params;
     const { rating, comment } = req.body;
-    const userId = req.user!.id;
+    const userId = req.user?.id;
 
     try {
-        const review = await ReviewService.updateReview(userId as string, medicineId as string, rating as number, comment as string);
+        const review = await ReviewService.updateReview(
+            userId as string, id as string,
+            rating,
+            comment
+        );
         res.status(200).json(review);
     } catch (err) {
-        res.status(500).json({
-            message: "somthing went wrong"
-        })
+        res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
 
 const deleteReview = async (req: Request, res: Response) => {
-    const { medicineId } = req.params;
-    const userId = req.user!.id;
+    const { id } = req.params;
+    const userId = req.user?.id;
 
     try {
-        await ReviewService.deleteReview(userId as string, medicineId as string);
+        await ReviewService.deleteReview(userId as string, id as string);
         res.status(200).json({ message: "Review deleted successfully" });
     } catch (err) {
-        res.status(500).json({
-            message: "somthing went wrong"
-        })
+        res.status(500).json({ message: "Something went wrong" });
     }
-}
+};
+
 export const ReviewController = {
     createReview,
     getMyReviews,
     getReviewsByMedicine,
     updateReview,
-    deleteReview
-
-}
-
+    deleteReview,
+};

@@ -8,6 +8,7 @@ export interface CreateCategoryInput {
 }
 const getAllUsers = async () => {
     return await prisma.user.findMany({
+
         select: {
             id: true,
             name: true,

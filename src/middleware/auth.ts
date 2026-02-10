@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { auth as betterAuth } from "../lib/auth";
+import { prisma } from "../lib/prisma";
 
 export enum UserRole {
     ADMIN = "ADMIN",
@@ -30,7 +31,7 @@ export const auth = (...roles: UserRole[]) => {
 
             const session = await betterAuth.api.getSession({
                 headers: req.headers as any,
-                
+
             });
 
 
@@ -41,7 +42,15 @@ export const auth = (...roles: UserRole[]) => {
                 });
             }
 
-     
+            const user = await prisma.user.findUnique({
+                where: { id: session.user.id }
+            })
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: "User not found",
+                });
+            }
             const userRole = (session.user as any).role as UserRole;
             if (!userRole) {
                 return res.status(403).json({
@@ -50,7 +59,7 @@ export const auth = (...roles: UserRole[]) => {
                 });
             }
 
-          
+
             req.user = {
                 id: session.user.id,
                 email: session.user.email,
@@ -60,7 +69,7 @@ export const auth = (...roles: UserRole[]) => {
                 phone: session.user.phone ?? "",
             };
 
-           
+
             if (roles.length && !roles.includes(req.user.role)) {
                 return res.status(403).json({
                     success: false,
@@ -68,7 +77,7 @@ export const auth = (...roles: UserRole[]) => {
                 });
             }
 
-     
+
             next();
         } catch (err) {
             console.error("Auth middleware error:", err);

@@ -3,8 +3,19 @@ import { adminService } from "./admin.service";
 import { UserRole } from "../../middleware/auth";
 
 const getAllUsers = async (req: Request, res: Response) => {
-    const users = await adminService.getAllUsers();
-    return res.status(200).json(users)
+
+    try {
+        if (req.user?.role !== UserRole.ADMIN) {
+            return res.status(403).json({ success: false, message: "Forbidden: Admins only" });
+        }
+        const users = await adminService.getAllUsers();
+        return res.status(200).json(users)
+    } catch (err) {
+        res.status(401).json({
+            success: false,
+            message: "forbidden access"
+        })
+    }
 }
 const updateUserStatus = async (req: Request, res: Response) => {
     try {
