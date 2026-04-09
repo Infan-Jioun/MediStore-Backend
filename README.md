@@ -64,7 +64,7 @@
 | **bcrypt** | Password hashing |
 | **dotenv** | Environment variable management |
 | **CORS** | Cross-origin resource sharing |
-| **morgan** | HTTP request logger |
+
 
 ---
 
