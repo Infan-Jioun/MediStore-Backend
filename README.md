@@ -58,8 +58,8 @@
 |---|---|
 | **Node.js** | Runtime environment |
 | **Express.js** | Web framework |
-| **PostgreSQL** | NoSQL Database |
-| **Mongoose** | PostgreSQL ODM |
+| **PostgreSQL** | MySQL Database |
+| **Prisma** | Prisma ORM |
 | **JWT** | Authentication & authorization |
 | **bcrypt** | Password hashing |
 | **dotenv** | Environment variable management |
