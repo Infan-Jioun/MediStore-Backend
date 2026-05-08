@@ -2,7 +2,7 @@ import type { Request, Response } from "express"
 export const getMe = async (req: Request, res: Response) => {
     if (!req.user) {
         return res.status(401).json({
-            message: "Not authenticated",
+            message: "Not authenticated ",
         });
     }
 
