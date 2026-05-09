@@ -54,5 +54,5 @@ app.use("/api/categories", categoryRouter)
 app.use("/api/orders", orderRouter)
 app.use("/api/reviews", ReviewRouter)
 app.get("/", (req, res) => {
-    res.send("Successfully MediStore Server Runing... ")
+    res.send("Successfully MediStore Server Runing now ... ")
 })
